@@ -7,12 +7,13 @@ public class ColumnManager : MonoBehaviour
 {
     public Camera mainCamera;
     public GameObject prefab;
-    private const int poolSize = 5;
+    private const int poolSize = 2;
     private List<GameObject> pool;
     private int currentpool = 0;
     public float speed = 1.0f;
     private bool gameended;
     private float screenWidth;
+    private float screenHeight;
     private Vector2 screenPosition;
     private Vector3 worldPositionX;
     public CanvasScaler canvasScaler;
@@ -33,8 +34,7 @@ public class ColumnManager : MonoBehaviour
 
     void CalculateWorldPosition()
     {
-        screenWidth = Camera.main.pixelWidth;
-        screenPosition = new Vector2(screenWidth, Screen.height / 2);
+        screenPosition = new Vector2(Screen.width / 2 , Screen.height);
         worldPositionX = Camera.main.ScreenToWorldPoint(new Vector3(screenPosition.x / poolSize, screenPosition.y, Camera.main.nearClipPlane));
     }
 
@@ -47,7 +47,7 @@ public class ColumnManager : MonoBehaviour
 
     void FirstColumnPosition()
     {
-        float cameraHeight = 2f * mainCamera.orthographicSize;
+        float cameraHeight = mainCamera.orthographicSize;
         float cameraWidth = cameraHeight * mainCamera.aspect;
         for (int i = 0; i < poolSize; i++)
         {
@@ -56,7 +56,7 @@ public class ColumnManager : MonoBehaviour
             float maxY = cameraHeight / 4.6f;
             float spawnYPosition = Random.Range(minY, maxY);
             float screenRight = mainCamera.ViewportToWorldPoint(new Vector2(1, 0)).x;
-            pool[i].transform.position = new Vector2(+screenRight + (-worldPositionX.x * i)-worldPositionX.x/2, spawnYPosition);
+            pool[i].transform.position = new Vector2(+screenRight + (-worldPositionX.x * i* 2.7f), spawnYPosition);
             pool[i].SetActive(true);
             currentpool++;
         }
@@ -75,14 +75,13 @@ public class ColumnManager : MonoBehaviour
 
     void GetColumnPosition()
     {
-        float cameraHeight = 2f * mainCamera.orthographicSize;
+        float cameraHeight = mainCamera.orthographicSize;
         float cameraWidth = cameraHeight * mainCamera.aspect;
 
         for (int i = 0; i < poolSize; i++)
         {
-
             float minY = -cameraHeight / 4.6f;
-            float maxY = cameraHeight / 4.6f;
+            float maxY = cameraWidth / 4.6f;
             float spawnYPosition = Random.Range(minY, maxY);
             float screenLeft = mainCamera.ViewportToWorldPoint(new Vector2(0, 0)).x;
             float screenRight = mainCamera.ViewportToWorldPoint(new Vector2(1, 0)).x;
